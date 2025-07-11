@@ -17,12 +17,21 @@ const courseRoutes = require("./routes/Course");
 
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = ["https://study-notion-frontend-one-mauve.vercel.app"];
+
 app.use(
-	cors({
-		origin: "*",
-		credentials: true,
-	})
-)
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+app.options("*", cors());
 database.connect();
 
 app.use(
